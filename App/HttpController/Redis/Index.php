@@ -1,10 +1,12 @@
 <?php
 
 namespace App\HttpController\Redis;
+use EasySwoole\Core\Component\Pool\PoolManager;
 use EasySwoole\Core\Http\AbstractInterface\Controller;
 use App\Server\Redis;
 
 class Index extends Controller{
+
     function index()
     {
         $connect = new Redis();
@@ -28,5 +30,18 @@ class Index extends Controller{
         }catch(\Exception $e){
             var_dump($e);
         }
+    }
+
+    /*
+     * 异步redis
+     */
+    function sysRedis(){
+        $pool = PoolManager::getInstance()->getPool('App\Utility\RedisPool');
+        $redis = $pool->getObj();
+        $redis->exec('set','a','123');
+        $a = $redis->exec('get','a');
+        $pool->freeObj($redis);
+        var_dump($a);
+
     }
 }

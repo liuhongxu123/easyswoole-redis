@@ -53,4 +53,11 @@ return [
             return null;
         }
     ],
+    'POOL_MANAGER' => [
+        'App\Utility\RedisPool' => [
+            'min' => 5,
+            'max' => 100,
+            'type' => 1
+        ]
+    ]
 ];
