@@ -1,6 +1,8 @@
 <?php
 
 namespace App\HttpController\Redis;
+
+use App\Utility\RedisPool;
 use EasySwoole\Core\Component\Pool\PoolManager;
 use EasySwoole\Core\Http\AbstractInterface\Controller;
 use App\Server\Redis;
@@ -36,12 +38,29 @@ class Index extends Controller{
      * 异步redis
      */
     function sysRedis(){
-        $pool = PoolManager::getInstance()->getPool('App\Utility\RedisPool');
-        $redis = $pool->getObj();
-        $redis->exec('set','a','123');
-        $a = $redis->exec('get','a');
-        $pool->freeObj($redis);
-        var_dump($a);
-
+        $pool = PoolManager::getInstance()->getPool(RedisPool::class);
+        \go(function ()use($pool){
+            $redis = $pool->getObj();
+            if($redis){
+                $redis->exec('set','a','123');
+                $a = $redis->exec('get','a');
+                $pool->freeObj($redis);
+                var_dump($a);
+            }else{
+                var_dump('redis not available');
+            }
+        });
+        \go(function ()use($pool){
+            $redis = $pool->getObj();
+            if($redis){
+                $redis->exec('set','b','456');
+                $a = $redis->exec('get','b');
+                $pool->freeObj($redis);
+                var_dump($a);
+            }else{
+                var_dump('redis not available');
+            }
+        });
     }
+
 }

@@ -9,6 +9,7 @@
 namespace EasySwoole;
 
 use App\Utility\MysqlPool2;
+use App\Utility\RedisPool;
 use \EasySwoole\Core\AbstractInterface\EventInterface;
 use EasySwoole\Core\Component\Pool\PoolManager;
 use \EasySwoole\Core\Swoole\ServerManager;
@@ -28,9 +29,10 @@ Class EasySwooleEvent implements EventInterface {
     {
         // TODO: Implement mainServerCreate() method.
 
-        // 数据库协程连接池
+        // Mysql协程连接池 and Redis协程连接池
         if (version_compare(phpversion('swoole'), '2.1.0', '>=')) {
             PoolManager::getInstance()->registerPool(MysqlPool2::class, 3, 10);
+            PoolManager::getInstance()->registerPool(RedisPool::class, 3, 10);
         }
 
     }
