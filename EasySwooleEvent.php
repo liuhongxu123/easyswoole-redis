@@ -16,6 +16,10 @@ use \EasySwoole\Core\Swoole\ServerManager;
 use \EasySwoole\Core\Swoole\EventRegister;
 use \EasySwoole\Core\Http\Request;
 use \EasySwoole\Core\Http\Response;
+// 引入EventHelper
+use \EasySwoole\Core\Swoole\EventHelper;
+// 注意这里是指额外引入我们上文实现的解析器
+use \App\WebSocket\Parser as WebSocketParser;
 
 Class EasySwooleEvent implements EventInterface {
 
@@ -34,6 +38,10 @@ Class EasySwooleEvent implements EventInterface {
             PoolManager::getInstance()->registerPool(MysqlPool2::class, 3, 10);
             PoolManager::getInstance()->registerPool(RedisPool::class, 3, 10);
         }
+
+        // 注意一个事件方法中可以注册多个服务，这里只是注册WebSocket解析器
+        // // 注册WebSocket处理
+        EventHelper::registerDefaultOnMessage($register, WebSocketParser::class);
 
     }
 
